@@ -1,11 +1,12 @@
-import {regionContains} from './map-model.js?v=1.1.0';
-import {COUNTRIES,STAGES,BENEFITS,TVH,PRIORITIES,LANGUAGES,parisDate} from './data.js?v=1.1.0';
+import {validateAssignmentData} from './task-model.js?v=1.2.0';
+import {regionContains} from './map-model.js?v=1.2.0';
+import {COUNTRIES,STAGES,BENEFITS,TVH,PRIORITIES,LANGUAGES,parisDate} from './data.js?v=1.2.0';
 export const normalizeId=v=>String(v??'').normalize('NFKC').toUpperCase().replace(/[\s./_-]+/g,'');
 export const validId=v=>/^[A-Z0-9]{3,24}$/.test(normalizeId(v));
 export const active=s=>s.cases.filter(d=>!d.archived);
 export const people=d=>d.groups.reduce((n,g)=>n+g.men+g.women+g.children,0);
 export const waiting=d=>d.groups.some(g=>['Sur place','En attente de solution'].includes(g.status));
-export const assigneeIds=d=>[...new Set([d.agent,...(d.associates||[])].filter(Boolean))];
+export const assigneeIds=d=>[...new Set([d.initialAgent,d.agent,...(d.associates||[])].filter(Boolean))];
 export const hasAssignee=(d,id)=>assigneeIds(d).includes(id);
 export const ready=d=>['Réparé','TVH livré'].includes(d.stage)&&['Non applicable','Livré'].includes(d.tvh)&&d.groups.every(g=>g.status===BENEFITS[5]);
 export function priority(d,settings,now=new Date()){
@@ -42,15 +43,15 @@ export function assignmentWarnings(s,d,a,now=new Date()){
  return [...new Set(warnings)];
 }
 export function setAssignees(s,d,ids,now=new Date()){
- const unique=[...new Set(ids.filter(Boolean))];const agents=unique.map(id=>s.agents.find(a=>a.id===id));if(agents.some(a=>!a))throw Error('Chargé inconnu');
+ const initial=d.initialAgent||d.agent||'';const unique=[...new Set([initial,...ids].filter(Boolean))];const agents=unique.map(id=>s.agents.find(a=>a.id===id));if(agents.some(a=>!a))throw Error('Chargé inconnu');
  const previous=assigneeIds(d);const warnings=[...new Set(agents.filter(a=>!previous.includes(a.id)).flatMap(a=>assignmentWarnings(s,d,a,now).map(w=>a.name+' : '+w)))];
- d.agent=unique[0]||'';d.associates=unique.slice(1);
+ d.agent=unique[0]||'';d.initialAgent=initial||d.agent;d.associates=unique.slice(1);
  if(previous.join('|')!==unique.join('|'))record(d,'Affectations : '+(agents.map(a=>a.name).join(', ')||'Non affecté')+(warnings.length?' · Informations : '+warnings.join(' ; '):''),now);
  return warnings;
 }
 export function assign(s,d,agentId,now=new Date()){return setAssignees(s,d,agentId?[agentId]:[],now)}
 export function addAssignee(s,d,agentId,now=new Date()){return setAssignees(s,d,[...assigneeIds(d),agentId],now)}
-export function removeAssignee(s,d,agentId,now=new Date()){return setAssignees(s,d,assigneeIds(d).filter(id=>id!==agentId),now)}
+export function removeAssignee(s,d,agentId,now=new Date()){if(agentId===(d.initialAgent||d.agent))throw Error('Le responsable initial est conservé. Réaffectez une tâche ou ajoutez un chargé complémentaire.');if(s.tasks?.some(t=>t.caseId===d.id&&t.assignee===agentId&&t.status!=='done'))throw Error('Réaffectez les tâches actives avant de retirer ce chargé.');return setAssignees(s,d,assigneeIds(d).filter(id=>id!==agentId),now)}
 export function moveStage(d,stage,now=new Date()){
  if(!STAGES.includes(stage))throw Error('Statut du véhicule inconnu');
  const prev=d.stage;d.stage=stage;
@@ -80,6 +81,6 @@ export function validateState(s){
  const dates=new Set();for(const sh of a.schedule){if(!/^\d{4}-\d{2}-\d{2}$/.test(sh.date)||dates.has(sh.date)||!['start','end','breakStart','breakEnd'].every(k=>times(sh[k]))||sh.start===sh.end||typeof sh.unavailable!=='boolean')throw Error('Planning invalide ou date en doublon.');dates.add(sh.date)} }
  for(const d of s.cases){delete d.action;delete d.due;delete d.actionOwner;const legacy={'Prise en charge':'Ouverture','Intervention':'Diagnostic','Dépôt':'Au dépôt','Réparation':'Réparations en cours','Transport':'TVH en cours','Relivraison':d.tvh==='Livré'?'TVH livré':'Réparé','Résolution':d.tvh==='Livré'?'TVH livré':'Réparé'};if(legacy[d.stage])d.stage=legacy[d.stage];if(d.stage==='TVH en cours')d.tvh='En cours';if(d.stage==='TVH livré')d.tvh='Livré';const id=normalizeId(d.id);if(!validId(id)||ids.has(id))throw Error('Identifiant invalide ou dossier en doublon : '+id);ids.add(id);d.id=id;
  if(!COUNTRIES.some(c=>c.code===d.country)||!STAGES.includes(d.stage)||!TVH.includes(d.tvh)||!(d.priority in PRIORITIES)||!['auto','manual'].includes(d.priorityMode)||!['Panne','Accident'].includes(d.type)||!Number.isFinite(Date.parse(d.opened))||!Number.isFinite(Date.parse(d.updated))||typeof d.archived!=='boolean'||typeof d.notes!=='string'||!Array.isArray(d.associates)||![d.agent,...d.associates].every(id=>!id||agentIds.has(id))||!(d.language in LANGUAGES)||!['location','depot','destination','beneficiaryDestination'].every(k=>validLocation(d[k]))||!Array.isArray(d.groups)||!d.groups.length||!d.groups.every(g=>typeof g.name==='string'&&BENEFITS.includes(g.status)&&['men','women','children','vulnerable','animals'].every(k=>Number.isInteger(g[k])&&g[k]>=0&&g[k]<=1000)&&g.vulnerable<=g.men+g.women+g.children)||!Array.isArray(d.history)||!d.history.every(h=>typeof h.text==='string'&&Number.isFinite(Date.parse(h.at)))||d.archived&&!Number.isFinite(Date.parse(d.closed)))throw Error('Données invalides dans le dossier '+id);
- } return s;
+ } validateAssignmentData(s);return s;
 }
 export function parseGPS(text){const m=text.trim().match(/^(-?\d{1,2}(?:\.\d+)?)\s*[,;]\s*(-?\d{1,3}(?:\.\d+)?)$/);if(!m)return null;const lat=+m[1],lng=+m[2];return Math.abs(lat)<=90&&Math.abs(lng)<=180?{lat,lng,label:lat+', '+lng,source:'Coordonnées saisies'}:null}

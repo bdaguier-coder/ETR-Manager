@@ -2,6 +2,8 @@
 
 Laboratoire interactif de supervision des dossiers ETR. Version démonstrative exclusivement en données fictives : aucun accès à CORE, aucun dossier client, aucun planning professionnel, aucun serveur ni base de données partagée.
 
+Le moteur d’aide à l’affectation est opérationnel sans API d’IA. Sa formule, ses règles et ses limites sont documentées dans [ASSIGNMENT_ENGINE.md](ASSIGNMENT_ENGINE.md).
+
 ## Utilisation
 
 L’interface principale regroupe la carte, les modes TVH et FLUX, les dossiers en liste ou pipeline, les équipes et affectations, le planning, les statistiques et les archives. La mini-interface des chargés est accessible par `?view=agent` et conçue pour une largeur de 350 à 450 px.
@@ -12,11 +14,11 @@ Les modifications sont enregistrées dans le stockage local du navigateur. Un é
 
 La priorité est distincte de l’étape du véhicule. Les bénéficiaires et sous-groupes conservent leur propre statut. Pour archiver, tous les bénéficiaires doivent avoir terminé leur assistance et le véhicule doit être « Réparé » ou « TVH livré », avec un TVH non applicable ou livré. Une réouverture conserve l’historique.
 
-Le glisser-déposer utilise les événements de pointeur et fonctionne aussi entre les colonnes du pipeline. Les alternatives au glisser-déposer sont disponibles dans la fiche dossier. Le glisser-déposer ajoute un chargé au dossier, sans justification ni confirmation. Un dossier peut avoir plusieurs chargés ; le retrait individuel permet une réaffectation. Les incompatibilités de présence, horaires, pause, langue ou charge indicative sont signalées sans bloquer. Les horaires sont interprétés dans le fuseau Europe/Paris, y compris les postes de nuit. Les langues sont attribuées explicitement aux collaborateurs et modifiables.
+Le glisser-déposer utilise les événements de pointeur et fonctionne aussi entre les colonnes du pipeline. Les alternatives au glisser-déposer sont disponibles dans la fiche dossier. Le glisser-déposer ajoute un chargé sans justification textuelle. Le moteur vérifie les contraintes ; une incompatibilité exige un avertissement et, si autorisée, une dérogation explicite. Le responsable initial est conservé et les tâches se réaffectent séparément. Les horaires sont interprétés dans le fuseau Europe/Paris, y compris les postes de nuit. Les langues sont attribuées explicitement aux collaborateurs et modifiables.
 
 ## Supervision simplifiée et carte
 
-Les huit statuts véhicule sont : Ouverture, Au dépôt, Au garage, Diagnostic, Réparations en cours, Réparé, TVH en cours, TVH livré. Les anciens statuts locaux sont migrés au chargement. Les champs prochaine action et échéance sont retirés, y compris à l’import des anciennes sauvegardes.
+Les huit statuts véhicule sont : Ouverture, Au dépôt, Au garage, Diagnostic, Réparations en cours, Réparé, TVH en cours, TVH livré. Les anciens statuts locaux sont migrés au chargement. Les anciens champs prochaine action et échéance du dossier sont retirés. Les tâches disposent désormais d’une échéance facultative, dans leur section dédiée.
 
 La fiche manager s’ouvre en consultation. Modifier permet la saisie occasionnelle ; l’interface chargé reste l’entrée principale. Les dossiers critiques apparaissent uniquement par leur numéro cliquable dans la liste de supervision. En saisie rapide, un dossier critique peut être enregistré avec son numéro, les autres informations restant facultatives et repliées.
 
@@ -53,7 +55,7 @@ GitHub Pages est activé : https://bdaguier-coder.github.io/ETR-Manager/ . La ve
 
 ## Architecture
 
-`data.js` : référentiels, villes publiques et scénarios. `core.js` : règles métier, validation et contrôles. `map.js` : cartographie, recherche et routage. `map-model.js` : regroupements et géométrie régionale. `app.js` : vues, formulaires et interactions. `style.css` : présentation responsive. `tests/core.test.mjs` : tests métier. `data/countries.geojson` : contours simplifiés des 24 pays. `data/regions.geojson` : 524 régions/provinces.
+`data.js` : référentiels, villes publiques et scénarios. `core.js` : règles métier, validation et contrôles. `map.js` : cartographie, recherche et routage. `map-model.js` : regroupements et géométrie régionale. `assignment-engine.js` : moteur local autonome ; `task-model.js` : tâches et écritures ; `assignment-ui.js` : interfaces ; `assignment-scenarios.js` : simulation. `app.js` : vues, formulaires et interactions. `style.css` : présentation responsive. `tests/core.test.mjs` : tests métier. `data/countries.geojson` : contours simplifiés des 24 pays. `data/regions.geojson` : 524 régions/provinces.
 
 ## Services et attributions
 

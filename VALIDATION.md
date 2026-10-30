@@ -1,3 +1,23 @@
+# Vérifications de la version 1.2 — Assignment Engine
+
+Essais du 30 octobre 2026 sur données exclusivement fictives, dans Chrome distant et avec Node.
+
+35 tests automatisés réussis. Les scénarios A–F vérifient les scores 12/23 et le choix de Sophie, les fins de service, les langues obligatoires, la continuité CORE simulée, l’absence de candidat admissible et le départage stable. Sont aussi contrôlés les seuils de surcharge, les coefficients décimaux, les échéances proches/dépassées, les dérogations obligatoires, les pauses et postes de nuit, les changements d’heure, la migration, les responsabilités, l’import/export et les statistiques par période. Le moteur calcule et affecte avec une fonction réseau qui lève systématiquement une erreur. Test de volume : 10 000 tâches et 200 chargés, de l’ordre de quelques dizaines de millisecondes dans le runtime de test, sans garantie pour tout matériel.
+
+Les six scénarios ont été exécutés dans l’interface. Le passage de Sophie à 30 tâches normales a recalculé immédiatement la première recommandation vers Thomas. Dans le scénario D, la confirmation a affecté la tâche à Thomas en conservant Sophie comme responsable initial et Thomas comme complémentaire.
+
+Dans les données de démonstration, le dossier 826431 a été affecté à Camille Morel ; Camille a ensuite été déclaré absent fictivement. Une nouvelle tâche CORE simulée a été créée puis confiée à Lina Dubois. Les rôles et les deux tâches ont été vérifiés dans la fiche et la vue des collaborateurs. Un glisser-déposer du dossier 826437 sur Camille absent a affiché un avertissement ; seule la confirmation explicite de la dérogation a permis l’écriture.
+
+Création ENGINE9001 dans la mini-interface : présence immédiate dans la file manager ouverte dans une autre fenêtre du même navigateur. Paramètres du moteur modifiés puis restaurés ; export JSON de 73 dossiers, 74 tâches et 12 chargés, contrôle des coefficients, historique du moteur, responsable initial, complémentaire et tâche CORE. Réimport confirmé puis rechargement : rôles et tâches conservés.
+
+Import CSV fictif et Excel fictif : journées validées puis confirmées. La vue du chargé indique « Planning importé, présence non vérifiée » et conserve l’absence simulée. La synthèse affiche 12 collaborateurs, les tâches par priorité, les rôles et les filtres de période, dont une période personnalisée.
+
+Régression : glisser-déposer de 826431 de Ouverture vers Au dépôt, archivage de 826442 avec clôture de ses tâches, trois itinéraires TVH Portugal, violet #8554d8 et animation tvhRouteFlow, flux véhicules/bénéficiaires, carte en plein écran et thèmes clair/sombre. Les scénarios initiaux sont restaurés après les essais.
+
+Rendu à 390 px contrôlé dans des cadres de navigateur : panneau de simulation de 390 px sans débordement horizontal, saisie agent sans débordement ; boutons utilisables par clic/pointeur. Aucun appareil tactile physique ni Safari/iOS n’était disponible : le comportement matériel tactile et l’installation PWA sur ces appareils restent à valider. Le moteur local est indépendant de la connexion ; la cartographie reste dépendante de ses services externes. Le mode manager est un mode de démonstration, sans habilitation sécurisée. Aucune synchronisation multi-utilisateur n’est annoncée.
+
+---
+
 # Vérifications de la version 1.1
 
 Essais réalisés le 30 octobre 2026 dans Chrome distant, en prévisualisation. Données fictives uniquement.

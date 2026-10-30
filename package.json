@@ -1,1 +1,1 @@
-{"name":"manager-control","version":"1.1.0","type":"module","private":true,"scripts":{"test":"node --test tests/*.test.mjs"}}
+{"name":"manager-control","version":"1.2.0","type":"module","private":true,"scripts":{"test":"node --test tests/*.test.mjs"}}
