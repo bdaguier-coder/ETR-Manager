@@ -1,3 +1,4 @@
+import {TVH_DELIVERED_COLOR} from './tvh-model.js?v=1.3.0';
 // Pure, testable geometry and display rules. No Leaflet, DOM or network dependency.
 export const TRANSIT_COLOR='#8554d8';
 export const PRIORITY_COLORS={normal:'#158967',follow:'#db9019',urgent:'#e15158',critical:'#20293d'};
@@ -5,7 +6,7 @@ export const PRIORITY_RANK={critical:0,urgent:1,follow:2,normal:3};
 export const MAX_DETAIL_MARKERS=160;
 export const MAX_VISIBLE_ROUTES=24;
 export function showCaseNumbers(zoom,{country='',region=null}={}){return zoom>=8||Boolean(country||region)&&zoom>=4;}
-export function markerTone(d,key,mode){return {fill:mode==='tvh'&&d.tvh==='En cours'?TRANSIT_COLOR:mode==='tvh'&&d.tvh==='Livré'?'#158967':PRIORITY_COLORS[key],priority:PRIORITY_COLORS[key],transit:mode==='tvh'&&d.tvh==='En cours'};}
+export function markerTone(d,key,mode){return {fill:mode==='tvh'&&d.tvh==='En cours'?TRANSIT_COLOR:mode==='tvh'&&d.tvh==='Livré'?TVH_DELIVERED_COLOR:PRIORITY_COLORS[key],priority:PRIORITY_COLORS[key],transit:mode==='tvh'&&d.tvh==='En cours'};}
 export function groupProjectedPoints(points,{width=30,height=30,limit=Infinity}={}){
  let groups;let attempts=0;
  do {const cells=new Map();for(const p of points){const key=Math.floor(p.x/width)+':'+Math.floor(p.y/height);let g=cells.get(key);if(!g){g={entries:[],sumLat:0,sumLng:0,minLat:p.lat,maxLat:p.lat,minLng:p.lng,maxLng:p.lng,key};cells.set(key,g)}g.entries.push(p);g.sumLat+=p.lat;g.sumLng+=p.lng;g.minLat=Math.min(g.minLat,p.lat);g.maxLat=Math.max(g.maxLat,p.lat);g.minLng=Math.min(g.minLng,p.lng);g.maxLng=Math.max(g.maxLng,p.lng)}groups=[...cells.values()];width*=1.4;height*=1.4;}while(groups.length>limit&&++attempts<32);

@@ -1,5 +1,5 @@
-import {engineConfig,recommendAssignments} from './assignment-engine.js?v=1.2.0';
-import {LANGUAGES,parisDate} from './data.js?v=1.2.0';
+import {engineConfig,recommendAssignments} from './assignment-engine.js?v=1.3.0';
+import {LANGUAGES,parisDate,WAITING_BENEFITS} from './data.js?v=1.3.0';
 const priorities=['normal','follow','urgent','critical'];
 const history=(d,text,now)=>{d.updated=new Date(now).toISOString();d.history.push({at:d.updated,text})};
 export function ensureAssignmentData(s){
@@ -8,7 +8,7 @@ export function ensureAssignmentData(s){
  const legacy=!Array.isArray(s.tasks);if(legacy)s.tasks=[];
  const represented=new Set(s.tasks.map(t=>t.caseId));
  for(const d of s.cases){d.initialAgent??=d.agent||'';if(d.initialAgent){d.associates=[...new Set([d.agent,...(d.associates||[])].filter(x=>x&&x!==d.initialAgent))];d.agent=d.initialAgent}
-  if(!represented.has(d.id)){const p=d.priorityMode==='manual'?d.priority:d.groups.some(g=>['Sur place','En attente de solution'].includes(g.status))?'urgent':(Date.parse(s.created||d.updated)-Date.parse(d.updated))/3600000>=(s.settings?.staleHours||24)?'follow':'normal';
+  if(!represented.has(d.id)){const p=d.priorityMode==='manual'?d.priority:d.groups.some(g=>WAITING_BENEFITS.includes(g.status))?'urgent':(Date.parse(s.created||d.updated)-Date.parse(d.updated))/3600000>=(s.settings?.staleHours||24)?'follow':'normal';
    let id;do{id='T'+String(++s.taskCounter).padStart(6,'0')}while(s.tasks.some(t=>t.id===id));
    s.tasks.push({id,caseId:d.id,title:'Suivi ETR',priority:p,status:d.archived?'done':'todo',assignee:d.agent||'',requiredLanguages:d.language?[d.language]:[],preferredLanguages:[],estimatedMinutes:30,due:null,created:d.opened,completedAt:d.archived?d.closed:null,source:'etr',history:[{at:d.opened,text:legacy?'Suivi initial issu du dossier de démonstration':'Suivi du nouveau dossier'}]});
   }

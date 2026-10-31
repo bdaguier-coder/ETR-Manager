@@ -1,4 +1,4 @@
-# Assignment Engine — version 1.2
+# Assignment Engine — version 1.3
 
 Moteur déterministe exécuté localement en JavaScript. `assignment-engine.js` ne dépend ni du DOM, ni du réseau, ni d’une API, ni d’un fournisseur d’IA. L’interface et les écritures sont dans des modules séparés. Le même module peut être utilisé ultérieurement par un serveur interne autorisé.
 
@@ -8,7 +8,7 @@ Chaque dossier conserve `initialAgent`, également présenté comme responsable 
 
 `tasks` est la collection locale des tâches : identifiant unique, dossier, intitulé, priorité, état `todo`/`doing`/`done`, responsable de tâche, durée estimée, langues obligatoires/souhaitables, échéance facultative, date de création/clôture, source ETR ou CORE simulé, historique. Une tâche terminée reste conservée. Les statuts du véhicule et des bénéficiaires restent indépendants.
 
-Au premier chargement d’une sauvegarde antérieure, une tâche de suivi est créée par dossier, avec le responsable et la priorité initiale disponibles. Une archive produit une tâche terminée à sa date de clôture. Cette migration est idempotente. Les nouvelles tâches sont ensuite explicites : le moteur n’infère pas des tâches provenant d’un système externe. Les couleurs d’un dossier restent celles de sa supervision ; ses tâches ont leurs propres priorités.
+Au premier chargement d’une sauvegarde antérieure, une tâche de suivi est créée par dossier, avec le responsable et la priorité initiale disponibles. Une archive produit une tâche terminée à sa date de clôture. Cette migration est idempotente. Les nouvelles tâches sont ensuite explicites : le moteur n’infère pas des tâches provenant d’un système externe. Les couleurs d’un dossier restent celles de sa supervision ; ses tâches conservent leurs propres priorités de base. Pour une tâche active, la priorité effective est le maximum entre sa priorité de base, la priorité manuelle du dossier et les signalements explicites rouge/noir. Les compteurs, la charge et les pénalités d’échéance utilisent cette priorité effective. Un signal retiré cesse de majorer la charge ; une tâche déjà critique reste critique. Les signaux de localisation, attente et linguiste valent urgent ; conflit et suspicion fraude/leakage valent critique. Aucun bonus ne diminue une priorité.
 
 Les imports JSON valident tâches, références, responsabilités, dates, langues, coefficients et historiques. Les données et paramètres sont sauvegardés avec le reste de la démonstration. L’export/import transporte la démonstration ; il n’existe pas de synchronisation entre appareils, ni entre les origines Sites et GitHub Pages.
 

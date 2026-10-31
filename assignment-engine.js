@@ -1,3 +1,4 @@
+import {effectiveTaskPriority} from './priority-signals.js?v=1.3.0';
 // Assignment Engine — pure local rules. No DOM, network, AI or persistent state.
 export const ENGINE_DEFAULTS = Object.freeze({
  weights:{normal:1,follow:2,urgent:5,critical:10}, nearDeadlineMinutes:60,
@@ -45,8 +46,8 @@ export function workloadIndex(state,config,now){
  const cfg=engineConfig(config),at=+new Date(now),cases=new Map(state.cases.map(d=>[d.id,d]));
  const loads=new Map(state.agents.map(a=>[a.id,{active:0,normal:0,follow:0,urgent:0,critical:0,weighted:0,near:0,overdue:0,caseIds:new Set()}]));
  for(const t of state.tasks||[]){const d=cases.get(t.caseId),l=loads.get(t.assignee);if(!l||!d||d.archived||t.status==='done')continue;
-  l.active++;l[t.priority]++;l.weighted+=cfg.weights[t.priority];l.caseIds.add(t.caseId);
-  if(t.due&&['urgent','critical'].includes(t.priority)){const left=(Date.parse(t.due)-at)/60000;if(left<0)l.overdue++;else if(left<=cfg.nearDeadlineMinutes)l.near++}
+  const key=effectiveTaskPriority(t,d);l.active++;l[key]++;l.weighted+=cfg.weights[key];l.caseIds.add(t.caseId);
+  if(t.due&&['urgent','critical'].includes(effectiveTaskPriority(t,d))){const left=(Date.parse(t.due)-at)/60000;if(left<0)l.overdue++;else if(left<=cfg.nearDeadlineMinutes)l.near++}
  }
  for(const l of loads.values())l.weighted=Math.round(l.weighted*100)/100;
  return loads;
@@ -56,7 +57,7 @@ export function recommendAssignments(state,task,config,now){
  const cfg=engineConfig(config),loads=workloadIndex(state,cfg,now),d=state.cases.find(d=>d.id===task.caseId);
  // Ignore the task being reassigned, so its incumbent is compared on the same basis.
  const existing=(state.tasks||[]).find(t=>t.id===task.id);
- if(existing&&existing.status!=='done'&&existing.assignee&&d&&!d.archived){const l=loads.get(existing.assignee);if(l){l.active--;l[existing.priority]--;l.weighted=Math.round((l.weighted-cfg.weights[existing.priority])*100)/100;if(existing.due&&['urgent','critical'].includes(existing.priority)){const left=(Date.parse(existing.due)-+new Date(now))/60000;if(left<0)l.overdue--;else if(left<=cfg.nearDeadlineMinutes)l.near--}}}
+ if(existing&&existing.status!=='done'&&existing.assignee&&d&&!d.archived){const l=loads.get(existing.assignee);if(l){const key=effectiveTaskPriority(existing,d);l.active--;l[key]--;l.weighted=Math.round((l.weighted-cfg.weights[key])*100)/100;if(existing.due&&['urgent','critical'].includes(effectiveTaskPriority(existing,d))){const left=(Date.parse(existing.due)-+new Date(now))/60000;if(left<0)l.overdue--;else if(left<=cfg.nearDeadlineMinutes)l.near--}}}
  const candidates=state.agents.map(agent=>{
   const availability=agentAvailability(agent,now,cfg),load=loads.get(agent.id),excluded=[],warnings=[];
   const missing=[...new Set(task.requiredLanguages||[])].filter(l=>!agent.languages.includes(l)),preferredMissing=[...new Set(task.preferredLanguages||[])].filter(l=>!agent.languages.includes(l));

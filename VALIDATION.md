@@ -1,3 +1,21 @@
+# Vérifications de la version 1.3 — TVH, mini-interface et signalements
+
+Essais du 31 octobre 2026, uniquement avec des données fictives.
+
+48 tests automatisés réussis : les 35 contrôles antérieurs et 13 contrôles supplémentaires de procédure TVH, migration bénéficiaire et signalements. Toutes les origines TVH convergent vers la France, y compris les anciennes destinations étrangères. Sans adresses, les repères de pays restent schématiques et n’ajoutent aucune coordonnée aux lieux du dossier. Les livrés deviennent roses ; leurs bénéficiaires restent indépendants. La zone et le zoom minimal sont contrôlés. Les adultes et enfants seuls composent le total ; vulnérabilité et animaux restent des indicateurs séparés.
+
+Dans Chrome distant : chargement du fond routier, onglet TVH, ouverture de la procédure 826433 Portugal–France, enregistrement livré sans adresse obligatoire et apparition du groupe rose en France. Les groupes KSK violets et les liens actifs sont présents ; 13 parcours dont 6 liens actifs dans la vue testée après modification. La commande de dézoom est désactivée au niveau minimal. La destination France est en lecture seule dans la procédure.
+
+Dans la mini-interface : sélection de 23 pays hors France, nouvelles options véhicule et bénéficiaires, composition 2 adultes + 1 enfant = 3 personnes malgré les deux indicateurs cochés, sauvegarde et persistance. Les cinq signalements ont été actionnés : les trois premiers passent rouge urgent ; les deux derniers passent noir critique. Le noir reste prioritaire ; son retrait redonne rouge si une alerte rouge subsiste. La fiche manager et la tâche de suivi reçoivent immédiatement l’escalade dans un autre onglet. La saisie du nombre d’enfants non encore enregistrée est conservée pendant ces changements. Création SIG9001 critique, rechargement et réouverture : signal conservé, tâche critique et dossier sans chargé visible dans la file d’affectation.
+
+Un ajout complémentaire à Camille hors service affiche l’avertissement et exige sa confirmation explicite, sans texte justificatif. Nora conserve la responsabilité initiale. Le bandeau de la mini-interface affiche immédiatement Nora et Camille avec leurs rôles respectifs. Les nouvelles alertes majorent les tâches actives dans le moteur sans modifier la priorité de base. Les six scénarios déterministes antérieurs passent toujours.
+
+Contrôle de mise en page en iframe de 390 px : cinq cases lisibles, commandes accessibles, bandeau multi-chargés. Ce contrôle ne remplace pas un essai sur matériel tactile ou Safari/iOS réel. Les erreurs du navigateur observées proviennent de son extension ; aucune erreur du code de l’application n’a été observée pendant les parcours testés. Les données de test ont été réinitialisées localement après vérification.
+
+Le stockage reste local, sans synchronisation entre appareils ou entre les deux domaines. Les liaisons TVH au pays ne sont ni des itinéraires routiers ni un suivi GPS. Les parcours précis, tuiles et recherches externes conservent leurs exigences réseau et de fournisseur.
+
+---
+
 # Vérifications de la version 1.2 — Assignment Engine
 
 Essais du 30 octobre 2026 sur données exclusivement fictives, dans Chrome distant et avec Node.
