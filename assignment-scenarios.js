@@ -1,4 +1,4 @@
-import {ENGINE_DEFAULTS,engineConfig} from './assignment-engine.js?v=1.3.1';
+import {ENGINE_DEFAULTS,engineConfig} from './assignment-engine.js?v=1.3.2';
 export const SCENARIOS={A:'12 tâches normales contre 4 urgentes + 3 normales',B:'Fin de service imminente',C:'Allemand obligatoire',D:'Retour CORE pendant l’absence du responsable',E:'Aucun candidat admissible',F:'Égalité et départage stable'};
 export function simulationDefinition(key='A'){
  const agents=[{id:'sophie',name:'Sophie Martin',normal:12,follow:0,urgent:0,critical:0,start:'08:00',end:'18:00',presence:'available',languages:['fr','en']},{id:'thomas',name:'Thomas Bernard',normal:3,follow:0,urgent:4,critical:0,start:'08:00',end:'18:00',presence:'available',languages:['fr','en','de']},{id:'lina',name:'Lina Robert',normal:2,follow:0,urgent:0,critical:0,start:'08:00',end:'18:00',presence:'absent',languages:['fr','de']}];

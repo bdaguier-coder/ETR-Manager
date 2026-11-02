@@ -1,10 +1,10 @@
-import {normaliseSignals,signalPriority,PRIORITY_SIGNALS} from './priority-signals.js?v=1.3.1';
-import {adultCount,beneficiaryCount,normaliseGroup} from './beneficiary-model.js?v=1.3.1';
-export {adultCount,beneficiaryCount} from './beneficiary-model.js?v=1.3.1';
-import {normaliseTVH,validateTVH,tvhMatchesCountry} from './tvh-model.js?v=1.3.1';
-import {validateAssignmentData} from './task-model.js?v=1.3.1';
-import {regionContains} from './map-model.js?v=1.3.1';
-import {COUNTRIES,STAGES,BENEFITS,WAITING_BENEFITS,TVH,PRIORITIES,LANGUAGES,parisDate} from './data.js?v=1.3.1';
+import {normaliseSignals,signalPriority,PRIORITY_SIGNALS} from './priority-signals.js?v=1.3.2';
+import {adultCount,beneficiaryCount,normaliseGroup} from './beneficiary-model.js?v=1.3.2';
+export {adultCount,beneficiaryCount} from './beneficiary-model.js?v=1.3.2';
+import {normaliseTVH,validateTVH,tvhMatchesCountry} from './tvh-model.js?v=1.3.2';
+import {validateAssignmentData} from './task-model.js?v=1.3.2';
+import {regionContains} from './map-model.js?v=1.3.2';
+import {COUNTRIES,STAGES,BENEFITS,WAITING_BENEFITS,TVH,PRIORITIES,LANGUAGES,parisDate} from './data.js?v=1.3.2';
 export const normalizeId=v=>String(v??'').normalize('NFKC').toUpperCase().replace(/[\s./_-]+/g,'');
 export const validId=v=>/^[A-Z0-9]{3,24}$/.test(normalizeId(v));
 export const active=s=>s.cases.filter(d=>!d.archived);
@@ -15,6 +15,7 @@ export const hasAssignee=(d,id)=>assigneeIds(d).includes(id);
 export const ready=d=>['Réparé','Livré après TVH'].includes(d.stage)&&['Non applicable','Livré'].includes(d.tvh)&&d.groups.every(g=>g.status===BENEFITS[5]);
 export function priority(d,settings,now=new Date()){
  if(d.archived)return {key:'normal',reason:'Dossier archivé'};
+ if(d.priorityOverride&&d.priorityMode==='manual')return {key:d.priority,reason:d.priorityReason||'Choix manuel de supervision'};
  const signaled=signalPriority(d);if(signaled?.key==='critical')return signaled;if(d.priorityMode==='manual'&&d.priority==='critical')return {key:'critical',reason:d.priorityReason||'Priorité critique manuelle'};if(signaled)return signaled;
  if(d.priorityMode==='manual')return {key:d.priority,reason:d.priorityReason||'Priorité manuelle'};
  if(waiting(d))return {key:'urgent',reason:'Bénéficiaires sur place ou en attente de solution'};
@@ -84,7 +85,7 @@ export function validateState(s){
  const times=t=>typeof t==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(t);
  for(const a of s.agents){if(!a.id||agentIds.has(a.id)||typeof a.name!=='string'||typeof a.service!=='string'||!Array.isArray(a.languages)||!a.languages.every(l=>l in LANGUAGES)||!Number.isFinite(a.capacity)||a.capacity<1||!Array.isArray(a.schedule))throw Error('Collaborateur invalide.');agentIds.add(a.id);
  const dates=new Set();for(const sh of a.schedule){if(!/^\d{4}-\d{2}-\d{2}$/.test(sh.date)||dates.has(sh.date)||!['start','end','breakStart','breakEnd'].every(k=>times(sh[k]))||sh.start===sh.end||typeof sh.unavailable!=='boolean')throw Error('Planning invalide ou date en doublon.');dates.add(sh.date)} }
- for(const d of s.cases){normaliseSignals(d);if(Array.isArray(d.groups))d.groups.forEach(normaliseGroup);validateTVH(d);delete d.action;delete d.due;delete d.actionOwner;const legacy={'Prise en charge':'Ouverture','Intervention':'Diagnostic','Au dépôt':'Dépôt','Au garage':'Garage','Réparation':'Réparations en cours','Transport':'TVH en cours','TVH livré':'Livré après TVH','Relivraison':d.tvh==='Livré'?'Livré après TVH':'Relivraison vers garage','Résolution':d.tvh==='Livré'?'Livré après TVH':'Réparé'};if(legacy[d.stage])d.stage=legacy[d.stage];if(d.stage==='TVH en cours')d.tvh='En cours';if(d.stage==='Livré après TVH')d.tvh='Livré';if(d.stage==='TVH en préparation')d.tvh='En attente';const id=normalizeId(d.id);if(!validId(id)||ids.has(id))throw Error('Identifiant invalide ou dossier en doublon : '+id);ids.add(id);d.id=id;
+ for(const d of s.cases){if(d.priorityOverride!==undefined&&typeof d.priorityOverride!=='boolean')throw Error('Choix manuel de priorité invalide.');normaliseSignals(d);if(Array.isArray(d.groups))d.groups.forEach(normaliseGroup);validateTVH(d);delete d.action;delete d.due;delete d.actionOwner;const legacy={'Prise en charge':'Ouverture','Intervention':'Diagnostic','Au dépôt':'Dépôt','Au garage':'Garage','Réparation':'Réparations en cours','Transport':'TVH en cours','TVH livré':'Livré après TVH','Relivraison':d.tvh==='Livré'?'Livré après TVH':'Relivraison vers garage','Résolution':d.tvh==='Livré'?'Livré après TVH':'Réparé'};if(legacy[d.stage])d.stage=legacy[d.stage];if(d.stage==='TVH en cours')d.tvh='En cours';if(d.stage==='Livré après TVH')d.tvh='Livré';if(d.stage==='TVH en préparation')d.tvh='En attente';const id=normalizeId(d.id);if(!validId(id)||ids.has(id))throw Error('Identifiant invalide ou dossier en doublon : '+id);ids.add(id);d.id=id;
  if(!COUNTRIES.some(c=>c.code===d.country)||!STAGES.includes(d.stage)||!TVH.includes(d.tvh)||!(d.priority in PRIORITIES)||!['auto','manual'].includes(d.priorityMode)||!['Panne','Accident'].includes(d.type)||!Number.isFinite(Date.parse(d.opened))||!Number.isFinite(Date.parse(d.updated))||typeof d.archived!=='boolean'||typeof d.notes!=='string'||!Array.isArray(d.associates)||![d.agent,...d.associates].every(id=>!id||agentIds.has(id))||!(d.language in LANGUAGES)||!['location','depot','destination','beneficiaryDestination'].every(k=>validLocation(d[k]))||!Array.isArray(d.groups)||!d.groups.length||!d.groups.every(g=>typeof g.name==='string'&&BENEFITS.includes(g.status)&&['adults','children'].every(k=>Number.isInteger(g[k])&&g[k]>=0&&g[k]<=1000)&&typeof g.vulnerable==='boolean'&&typeof g.animals==='boolean')||!Array.isArray(d.history)||!d.history.every(h=>typeof h.text==='string'&&Number.isFinite(Date.parse(h.at)))||d.archived&&!Number.isFinite(Date.parse(d.closed)))throw Error('Données invalides dans le dossier '+id);
  } validateAssignmentData(s);return s;
 }
@@ -101,5 +102,14 @@ export function updateTVH(d,input,now=new Date()){
 
 export function setPrioritySignal(s,d,key,value,now=new Date()){
  const definition=PRIORITY_SIGNALS.find(x=>x.key===key);if(!definition||typeof value!=='boolean')throw Error('Signalement de priorité invalide.');normaliseSignals(d);if(d.archived)throw Error('Rouvrez le dossier avant de modifier un signalement.');
- if(d.signals[key]===value)return priority(d,s.settings,now);const before=priority(d,s.settings,now);d.signals[key]=value;record(d,'Signalement '+(value?'activé':'retiré')+' : '+definition.label,now);const after=priority(d,s.settings,now);if(after.key!==before.key)record(d,'Priorité : '+PRIORITIES[before.key].label+' → '+PRIORITIES[after.key].label+' · '+after.reason,now);return after;
+ if(d.signals[key]===value)return priority(d,s.settings,now);const before=priority(d,s.settings,now);d.signals[key]=value;if(value)d.priorityOverride=false;record(d,'Signalement '+(value?'activé':'retiré')+' : '+definition.label,now);const after=priority(d,s.settings,now);if(after.key!==before.key)record(d,'Priorité : '+PRIORITIES[before.key].label+' → '+PRIORITIES[after.key].label+' · '+after.reason,now);return after;
+}
+
+export function setManualPriority(s,d,key,now=new Date()){
+ if(!['normal','urgent','critical'].includes(key))throw Error('Priorité non disponible.');
+ if(d.archived)throw Error('Rouvrez le dossier avant de modifier sa priorité.');
+ const before=priority(d,s.settings,now);if(d.priorityOverride&&d.priorityMode==='manual'&&d.priority===key)return before;
+ d.priorityMode='manual';d.priority=key;d.priorityOverride=true;d.priorityReason='Choix manuel de supervision';
+ record(d,'Priorité manuelle : '+PRIORITIES[before.key].label+' → '+PRIORITIES[key].label+' · signalements conservés',now);
+ return priority(d,s.settings,now);
 }

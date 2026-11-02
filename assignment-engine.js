@@ -1,4 +1,4 @@
-import {effectiveTaskPriority} from './priority-signals.js?v=1.3.1';
+import {effectiveTaskPriority} from './priority-signals.js?v=1.3.2';
 // Assignment Engine — pure local rules. No DOM, network, AI or persistent state.
 export const ENGINE_DEFAULTS = Object.freeze({
  weights:{normal:1,follow:2,urgent:5,critical:10}, nearDeadlineMinutes:60,

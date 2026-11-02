@@ -1,4 +1,4 @@
-import {COUNTRIES,country} from './data.js?v=1.3.1';
+import {COUNTRIES,country} from './data.js?v=1.3.2';
 export const TVH_DELIVERED_COLOR='#e96aa6';
 // Operational viewport: Europe, Maghreb, Türkiye, Azores/Canaries and Svalbard.
 export const OPERATIONAL_BOUNDS=[[26,-33],[81,46]];

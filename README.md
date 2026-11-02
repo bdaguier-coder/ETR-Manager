@@ -84,3 +84,7 @@ Bibliothèques : Leaflet 1.9.4 (BSD-2-Clause), SheetJS CE 0.18.5 (Apache-2.0), e
 Pas d’authentification ni de rôle sécurisé : l’accès manager est un mode de démonstration. Pas de suivi transporteur réel, de collaboration multi-utilisateur, de synchronisation multi-appareils ou de mesure de productivité. Les suggestions de mutualisation par pays départ/destination demandent une vérification logistique des villes, contraintes et capacités. Les estimations de charge sont des repères, pas une évaluation individuelle.
 
 Une utilisation réelle demandera un serveur, une base partagée, une gestion des identités et habilitations, une journalisation adaptée, des fournisseurs cartographiques/routiers contractuels et la validation des services de conformité. La compatibilité Safari/iOS et l’installation PWA doivent être vérifiées sur de vrais appareils après publication HTTPS.
+
+## Priorité en un clic
+
+La fiche en consultation affiche immédiatement Critique (noir), Urgent (rouge) et En cours (vert). Un clic enregistre le choix, actualise les vues et crée une entrée d’historique, sans modifier le statut véhicule ou bénéficiaires. Un choix manuel explicite peut réduire une priorité issue de signalements : ceux-ci restent conservés et visibles. Une nouvelle activation de signalement rétablit les règles automatiques d’escalade (noir avant rouge). Les archives doivent être rouvertes avant modification. Le jaune de localisation et le violet/rose du TVH gardent leurs sens distincts.

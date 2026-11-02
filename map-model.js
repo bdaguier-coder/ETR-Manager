@@ -1,4 +1,4 @@
-import {TVH_DELIVERED_COLOR,countryAnchor} from './tvh-model.js?v=1.3.1';
+import {TVH_DELIVERED_COLOR,countryAnchor} from './tvh-model.js?v=1.3.2';
 // Pure, testable geometry and display rules. No Leaflet, DOM or network dependency.
 export const UNLOCATED_COLOR='#f5cf3e';
 export const isUnlocated=d=>!d.location||!Number.isFinite(d.location.lat)||!Number.isFinite(d.location.lng);

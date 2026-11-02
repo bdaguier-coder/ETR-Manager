@@ -1,4 +1,4 @@
-import {BENEFITS} from './data.js?v=1.3.1';
+import {BENEFITS} from './data.js?v=1.3.2';
 export const adultCount=g=>Number.isInteger(g.adults)?g.adults:(g.men||0)+(g.women||0);
 export const beneficiaryCount=g=>adultCount(g)+(g.children||0);
 export function normaliseGroup(g){

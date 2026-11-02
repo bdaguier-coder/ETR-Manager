@@ -25,7 +25,7 @@ export const COUNTRIES = [
  ['GR','Grèce','🇬🇷',['el'],['Athína',37.9838,23.7275],['Thessaloníki',40.6401,22.9444],['Pátra',38.2466,21.7346]]
 ].map(([code,name,flag,languages,...cities])=>({code,name,flag,languages,cities}));
 export const LANGUAGES={fr:'Français',en:'Anglais',es:'Espagnol',pt:'Portugais',it:'Italien',de:'Allemand',nl:'Néerlandais',hu:'Hongrois',cs:'Tchèque',pl:'Polonais',ro:'Roumain',sq:'Albanais',tr:'Turc',ar:'Arabe',no:'Norvégien',sv:'Suédois',hr:'Croate',el:'Grec'};
-export const PRIORITIES={normal:{label:'Normal',color:'#158967'},follow:{label:'À suivre',color:'#db9019'},urgent:{label:'Urgent',color:'#e15158'},critical:{label:'Critique',color:'#20293d'}};
+export const PRIORITIES={normal:{label:'En cours',color:'#158967'},follow:{label:'À suivre',color:'#db9019'},urgent:{label:'Urgent',color:'#e15158'},critical:{label:'Critique',color:'#20293d'}};
 export const STAGES=['Ouverture','Dépôt','Garage','Diagnostic','Réparations en cours','Réparé','Relivraison vers garage','TVH en préparation','TVH en cours','Livré après TVH'];
 export const AGENT_STAGES=['Ouverture','Dépôt','Garage','Relivraison vers garage','TVH en préparation','TVH en cours','Livré après TVH'];
 export const BENEFITS=['En attente au bord de la route','À l’hôtel','En attente en villégiature','Retour domicile · en cours','Poursuite du voyage · en cours','Pris en charge / traitement terminé','Retour domicile · organisation','Poursuite du voyage · organisation'];

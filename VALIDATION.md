@@ -1,3 +1,11 @@
+# Vérifications 1.3.2 — Priorité directe
+
+2 novembre 2026 : 54 tests automatisés réussis. Les tests supplémentaires vérifient les trois choix, leur persistance, leur historique, la conservation des signalements et des statuts opérationnels, la réactivation des alertes lors d’un nouveau signalement et le refus sur archive.
+
+Chrome distant : ouverture de 826480 depuis la carte, passages Critique → Urgent → En cours → Critique → En cours sans formulaire ni confirmation ; badge actualisé et classe verte du repère vérifiée. Rechargement et réouverture : choix En cours conservé. Les trois boutons ont une hauteur minimale de 46 px et des couleurs explicites dans les deux thèmes. Les 52 tests antérieurs restent réussis. Pas d’essai tactile physique ni Safari réel revendiqué.
+
+---
+
 # Vérifications 1.3.1 — Localisation et repère jaune
 
 2 novembre 2026 : 52 tests Node réussis. Les nouveaux tests couvrent les 24 repères pays sans écriture de coordonnées, les lieux non reconnus, la confirmation GPS et sa persistance sans modification de priorité, puis le retour au pays.
