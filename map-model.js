@@ -1,5 +1,8 @@
-import {TVH_DELIVERED_COLOR} from './tvh-model.js?v=1.3.0';
+import {TVH_DELIVERED_COLOR,countryAnchor} from './tvh-model.js?v=1.3.1';
 // Pure, testable geometry and display rules. No Leaflet, DOM or network dependency.
+export const UNLOCATED_COLOR='#f5cf3e';
+export const isUnlocated=d=>!d.location||!Number.isFinite(d.location.lat)||!Number.isFinite(d.location.lng);
+export const dossierPosition=d=>isUnlocated(d)?countryAnchor(d.country):d.location;
 export const TRANSIT_COLOR='#8554d8';
 export const PRIORITY_COLORS={normal:'#158967',follow:'#db9019',urgent:'#e15158',critical:'#20293d'};
 export const PRIORITY_RANK={critical:0,urgent:1,follow:2,normal:3};

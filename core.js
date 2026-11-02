@@ -1,10 +1,10 @@
-import {normaliseSignals,signalPriority,PRIORITY_SIGNALS} from './priority-signals.js?v=1.3.0';
-import {adultCount,beneficiaryCount,normaliseGroup} from './beneficiary-model.js?v=1.3.0';
-export {adultCount,beneficiaryCount} from './beneficiary-model.js?v=1.3.0';
-import {normaliseTVH,validateTVH,tvhMatchesCountry} from './tvh-model.js?v=1.3.0';
-import {validateAssignmentData} from './task-model.js?v=1.3.0';
-import {regionContains} from './map-model.js?v=1.3.0';
-import {COUNTRIES,STAGES,BENEFITS,WAITING_BENEFITS,TVH,PRIORITIES,LANGUAGES,parisDate} from './data.js?v=1.3.0';
+import {normaliseSignals,signalPriority,PRIORITY_SIGNALS} from './priority-signals.js?v=1.3.1';
+import {adultCount,beneficiaryCount,normaliseGroup} from './beneficiary-model.js?v=1.3.1';
+export {adultCount,beneficiaryCount} from './beneficiary-model.js?v=1.3.1';
+import {normaliseTVH,validateTVH,tvhMatchesCountry} from './tvh-model.js?v=1.3.1';
+import {validateAssignmentData} from './task-model.js?v=1.3.1';
+import {regionContains} from './map-model.js?v=1.3.1';
+import {COUNTRIES,STAGES,BENEFITS,WAITING_BENEFITS,TVH,PRIORITIES,LANGUAGES,parisDate} from './data.js?v=1.3.1';
 export const normalizeId=v=>String(v??'').normalize('NFKC').toUpperCase().replace(/[\s./_-]+/g,'');
 export const validId=v=>/^[A-Z0-9]{3,24}$/.test(normalizeId(v));
 export const active=s=>s.cases.filter(d=>!d.archived);

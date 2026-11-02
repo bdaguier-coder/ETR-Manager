@@ -1,8 +1,8 @@
-import {effectiveTaskPriority} from './priority-signals.js?v=1.3.0';
-import {engineConfig,workloadIndex,agentAvailability,recommendAssignments,explanation} from './assignment-engine.js?v=1.3.0';
-import {ensureAssignmentData,validateAssignmentData,createTask,applyAssignment,finishTask,colleagueStats} from './task-model.js?v=1.3.0';
-import {SCENARIOS,simulationDefinition,buildSimulation} from './assignment-scenarios.js?v=1.3.0';
-import {LANGUAGES,PRIORITIES,parisDate,isoLocal} from './data.js?v=1.3.0';
+import {effectiveTaskPriority} from './priority-signals.js?v=1.3.1';
+import {engineConfig,workloadIndex,agentAvailability,recommendAssignments,explanation} from './assignment-engine.js?v=1.3.1';
+import {ensureAssignmentData,validateAssignmentData,createTask,applyAssignment,finishTask,colleagueStats} from './task-model.js?v=1.3.1';
+import {SCENARIOS,simulationDefinition,buildSimulation} from './assignment-scenarios.js?v=1.3.1';
+import {LANGUAGES,PRIORITIES,parisDate,isoLocal} from './data.js?v=1.3.1';
 const h=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const option=(v,label,current)=>'<option value="'+h(v)+'" '+(v===current?'selected':'')+'>'+h(label)+'</option>';
 const languageOptions=current=>option('','Aucune',current)+Object.entries(LANGUAGES).map(([k,v])=>option(k,v,current)).join('');

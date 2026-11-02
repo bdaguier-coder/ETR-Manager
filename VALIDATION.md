@@ -1,3 +1,13 @@
+# Vérifications 1.3.1 — Localisation et repère jaune
+
+2 novembre 2026 : 52 tests Node réussis. Les nouveaux tests couvrent les 24 repères pays sans écriture de coordonnées, les lieux non reconnus, la confirmation GPS et sa persistance sans modification de priorité, puis le retour au pays.
+
+Chrome distant, données fictives : LOC9001 créé en Espagne sans lieu apparaît en jaune « Position à préciser », séparé des dossiers localisés au même repère. Confirmation GPS 41.3851, 2.1734 depuis la fiche : enregistrement direct, jaune retiré et priorité urgente conservée. Recherche Sagrada Família, Barcelona : cinq propositions Nominatim ; confirmation et adresse conservée après rechargement dans la liste. Le texte Garage fictif non identifié, conservé sans coordonnées, rétablit le jaune. Création LOC9002 au Portugal depuis la mini-interface sans lieu : modification reçue côté manager. En vue large, point jaune sans numéro. L’accès au lieu principal est visible dans la mini-interface. Les 48 tests de régression précédents restent réussis.
+
+Les essais portent uniquement sur des lieux publics et dossiers fictifs, sur une origine de prévisualisation distincte du site public. Services externes dépendants du réseau ; saisie GPS sans géocodage. Aucun essai matériel tactile ou Safari/iOS réel revendiqué.
+
+---
+
 # Vérifications de la version 1.3 — TVH, mini-interface et signalements
 
 Essais du 31 octobre 2026, uniquement avec des données fictives.

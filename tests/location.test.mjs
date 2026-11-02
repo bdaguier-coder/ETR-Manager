@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {COUNTRIES,seed} from '../data.js';
+import {createCase,validateState,priority,filtered} from '../core.js';
+import {isUnlocated,dossierPosition,UNLOCATED_COLOR} from '../map-model.js';
+import {confirmTVHPlace} from '../tvh-model.js';
+import {searchPlace} from '../map.js';
+const now=new Date('2026-11-02T15:00:00Z');
+test('Dossiers sans localisation des 24 pays : repère illustratif dans leur pays sans modifier les données',()=>{for(const c of COUNTRIES){const s=seed(now),d=createCase(s,{id:'LOC9001',country:c.code},now),before=JSON.stringify(d);const p=dossierPosition(d);assert.ok(isUnlocated(d));assert.equal(p.country,c.code);assert.ok(p.schematic);assert.equal(JSON.stringify(d),before);assert.equal(d.location,null)}assert.equal(UNLOCATED_COLOR,'#f5cf3e')});
+test('Texte non reconnu et coordonnées incomplètes restent non localisés ; latitude zéro acceptée',()=>{for(const location of [null,{label:'Garage inconnu',lat:null,lng:null},{lat:44,lng:null},{lat:NaN,lng:4}])assert.equal(isUnlocated({country:'ES',location}),true);assert.equal(isUnlocated({location:{lat:0,lng:0}}),false)});
+test('Localisation GPS confirmée : point exact, priorité critique inchangée et persistance JSON',async()=>{const s=validateState(seed(now)),d=createCase(s,{id:'LOC9002',country:'ES'},now);d.priorityMode='manual';d.priority='critical';const [place]=await searchPlace('41.3851, 2.1734','ES');confirmTVHPlace(d,'location',place);validateState(s);assert.equal(isUnlocated(d),false);assert.deepEqual(dossierPosition(d),place);assert.equal(priority(d,s.settings,now).key,'critical');const restored=validateState(JSON.parse(JSON.stringify(s))).cases.find(x=>x.id===d.id);assert.equal(restored.location.lat,41.3851);assert.ok(filtered(s,{country:'ES',priority:'critical'},false,now).some(x=>x.id===d.id))});
+test('Retirer les coordonnées conserve le texte et rétablit le repère au pays sans modifier le TVH',()=>{const s=validateState(seed(now)),d=s.cases.find(x=>x.country==='ES');const tvh=d.tvh;confirmTVHPlace(d,'location',{label:'Lieu à confirmer',lat:null,lng:null,country:'ES',source:'Texte non localisé'});validateState(s);assert.equal(d.location.label,'Lieu à confirmer');assert.equal(dossierPosition(d).country,'ES');assert.equal(d.tvh,tvh)});

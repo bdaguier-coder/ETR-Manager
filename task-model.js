@@ -1,5 +1,5 @@
-import {engineConfig,recommendAssignments} from './assignment-engine.js?v=1.3.0';
-import {LANGUAGES,parisDate,WAITING_BENEFITS} from './data.js?v=1.3.0';
+import {engineConfig,recommendAssignments} from './assignment-engine.js?v=1.3.1';
+import {LANGUAGES,parisDate,WAITING_BENEFITS} from './data.js?v=1.3.1';
 const priorities=['normal','follow','urgent','critical'];
 const history=(d,text,now)=>{d.updated=new Date(now).toISOString();d.history.push({at:d.updated,text})};
 export function ensureAssignmentData(s){

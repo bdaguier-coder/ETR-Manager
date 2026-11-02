@@ -18,6 +18,10 @@ Le glisser-déposer utilise les événements de pointeur et fonctionne aussi ent
 
 ## Supervision simplifiée et carte
 
+Un dossier sans coordonnées apparaît en jaune à un repère schématique de son pays, avec « Position à préciser ». Aucun point fictif n’est enregistré dans sa localisation. Sa priorité reste distincte ; les procédures TVH gardent le violet/rose. Les dossiers localisés et à localiser sont regroupés séparément. Un filtre régional n’attribue pas de région à un dossier sans coordonnées.
+
+Dans la fiche en consultation, « Ajouter la localisation » / « Modifier la localisation » ouvre directement la recherche d’adresse, de lieu ou de GPS. Confirmer un résultat enregistre uniquement le lieu, avec historique et contrôle des modifications concurrentes. La mini-interface expose le lieu principal sans ouvrir les champs facultatifs ; son enregistrement reste celui du dossier. Un lieu non reconnu peut rester en texte sans coordonnées : le repère reste jaune au pays.
+
 Les statuts véhicule sont : Ouverture, Dépôt, Garage, Diagnostic, Réparations en cours, Réparé, Relivraison vers garage, TVH en préparation, TVH en cours, Livré après TVH. Les anciens statuts locaux sont migrés au chargement. Les anciens champs prochaine action et échéance du dossier sont retirés. Les tâches disposent désormais d’une échéance facultative, dans leur section dédiée.
 
 La mini-interface chargé exclut la France des nouveaux pays ETR. Elle affiche en tête le responsable initial et les compléments. La composition compte adultes + enfants ; les indicateurs vulnérabilité (rouge) et animaux (vert) restent indépendants. Les situations des bénéficiaires distinguent route, villégiature, hôtel et retour/poursuite en organisation ou en cours.

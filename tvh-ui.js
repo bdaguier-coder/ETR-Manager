@@ -1,5 +1,5 @@
-import {country,TVH} from './data.js?v=1.3.0';
-import {tvhJourney} from './tvh-model.js?v=1.3.0';
+import {country,TVH} from './data.js?v=1.3.1';
+import {tvhJourney} from './tvh-model.js?v=1.3.1';
 const h=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const statClass=s=>s==='En cours'?'transit':s==='Livré'?'delivered':'pending';
 export function tvhStatusBadge(status){return '<span class="tvh-status '+statClass(status)+'">'+h(status==='En cours'?'EN COURS':status==='Livré'?'LIVRÉ':status==='En attente'?'EN ATTENTE':status)+'</span>'}
