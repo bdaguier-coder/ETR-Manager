@@ -1,0 +1,49 @@
+name: Verify Manager Control
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Automated functional logic tests
+        run: npm test
+      - name: Assemble Cloudflare Pages static output
+        run: node scripts/build.mjs
+      - name: Verify both PWA manifests and deployment resources
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { existsSync, readFileSync } from 'node:fs';
+          const files = [
+            'index.html','app.js','core.js','data.js','map.js','map-model.js',
+            'tvh-model.js','beneficiary-model.js','priority-signals.js','tvh-ui.js',
+            'assignment-engine.js','task-model.js','assignment-ui.js',
+            'assignment-scenarios.js','style.css','manifest.webmanifest',
+            'manifest-agent.webmanifest','sw.js','icon.svg','icon-192.png',
+            'icon-512.png','data/countries.geojson','data/regions.geojson',
+            'vendor/leaflet.js','vendor/leaflet.css','vendor/xlsx.full.min.js'
+          ];
+          for (const f of files) assert(existsSync('dist/'+f), 'Missing: dist/'+f);
+          const pwa=JSON.parse(readFileSync('dist/manifest.webmanifest','utf8'));
+          const agent=JSON.parse(readFileSync('dist/manifest-agent.webmanifest','utf8'));
+          assert.equal(pwa.name,'Manager Control');
+          assert.equal(pwa.id,'./');
+          assert.equal(pwa.scope,'./');
+          assert.equal(pwa.start_url,'./');
+          assert.equal(agent.id,'./agent');
+          for(const m of [pwa,agent])for(const icon of m.icons||[])assert(existsSync('dist/'+icon.src.replace(/^\.\//,'')),icon.src);
+          assert(readFileSync('dist/index.html','utf8').includes('manifest.webmanifest'));
+          assert(readFileSync('dist/app.js','utf8').includes("navigator.serviceWorker.register('./sw.js')"));
+          console.log('Static build and PWA validation passed');
+          NODE
